@@ -41,27 +41,6 @@
 </div>
 
 <script>
-    const input = document.getElementById("input");
-const chatBox = document.getElementById("chatBox");
-
-// ENTER KEY
-input.addEventListener("keypress", function(e) {
-  if (e.key === "Enter") sendMessage();
-});
-
-// NEW CHAT BUTTON
-document.querySelector(".new-chat").addEventListener("click", () => {
-  chatBox.innerHTML = `
-    <div class="message bot-message">
-      <div class="msg-container">
-        <img src="/static/bot.png">
-        <div>Hello! How can I help you today?</div>
-      </div>
-    </div>
-  `;
-});
-
-// SEND MESSAGE
 function sendMessage() {
   const text = input.value.trim();
   if (!text) return;
@@ -87,23 +66,15 @@ function sendMessage() {
   fetch("https://chatbot-project-yzem.onrender.com/chat", {
     method: "POST",
     headers: {
-        "Content-Type": "application/json"
+      "Content-Type": "application/json"
     },
     body: JSON.stringify({ message: text })
-})
-.then(res => res.json())
-.then(data => {
-    loader.remove(); // ✅ moved here
+  })
+  .then(res => res.json())
+  .then(data => {
+    loader.remove();
 
-    addMessage(data.reply, "bot");
-})
-.catch(err => {
-    loader.remove(); // ✅ also handle error case
-
-    console.error(err);
-    addMessage("⚠️ Error connecting server", "bot");
-});
-
+    // BOT MESSAGE
     const botMsg = document.createElement("div");
     botMsg.className = "message bot-message";
 
@@ -123,39 +94,20 @@ function sendMessage() {
     typeText(textDiv, data.reply);
     scrollBottom();
   })
-  .catch(() => {
+  .catch(err => {
     loader.remove();
+    console.error(err);
 
-    const err = document.createElement("div");
-    err.className = "message bot-message";
-    err.innerHTML = `
+    const errMsg = document.createElement("div");
+    errMsg.className = "message bot-message";
+    errMsg.innerHTML = `
       <div class="msg-container">
-        <img src="bot.png">
-        <div>⚠️ AI server not running</div>
+        <img src="/static/bot.png">
+        <div>⚠️ Error connecting server</div>
       </div>
     `;
-    chatBox.appendChild(err);
+    chatBox.appendChild(errMsg);
   });
-}
-
-// TYPING EFFECT
-function typeText(element, text, speed = 20) {
-  element.innerHTML = "";
-  let i = 0;
-
-  function typing() {
-    if (i < text.length) {
-      element.innerHTML += text.charAt(i);
-      i++;
-      setTimeout(typing, speed);
-    }
-  }
-  typing();
-}
-
-// SCROLL
-function scrollBottom() {
-  chatBox.scrollTop = chatBox.scrollHeight;
 }
 </script>
 </body>
