@@ -86,12 +86,23 @@ function sendMessage() {
   // API CALL
   fetch("https://chatbot-project-yzem.onrender.com/chat", {
     method: "POST",
-    headers: {"Content-Type": "application/json"},
+    headers: {
+        "Content-Type": "application/json"
+    },
     body: JSON.stringify({ message: text })
-  })
-  .then(res => res.json())
-  .then(data => {
-    loader.remove();
+})
+.then(res => res.json())
+.then(data => {
+    loader.remove(); // ✅ moved here
+
+    addMessage(data.reply, "bot");
+})
+.catch(err => {
+    loader.remove(); // ✅ also handle error case
+
+    console.error(err);
+    addMessage("⚠️ Error connecting server", "bot");
+});
 
     const botMsg = document.createElement("div");
     botMsg.className = "message bot-message";
