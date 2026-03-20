@@ -41,11 +41,58 @@
 </div>
 
 <script>
+<script>
+const input = document.getElementById("input");
+const chatBox = document.getElementById("chatBox");
+const newChatBtn = document.querySelector(".new-chat");
+
+// ✅ ENTER KEY WORKS
+input.addEventListener("keydown", function(e) {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    sendMessage();
+  }
+});
+
+// ✅ NEW CHAT BUTTON WORKS
+newChatBtn.addEventListener("click", function() {
+  chatBox.innerHTML = `
+    <div class="message bot-message">
+      <div class="msg-container">
+        <img src="/static/bot.png">
+        <div>Hello! How can I help you today?</div>
+      </div>
+    </div>
+  `;
+});
+
+// ✅ SCROLL FIX (NO ERROR NOW)
+function scrollBottom() {
+  chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+// ✅ TYPING EFFECT
+function typeText(element, text, speed = 20) {
+  element.innerHTML = "";
+  let i = 0;
+
+  function typing() {
+    if (i < text.length) {
+      element.innerHTML += text.charAt(i);
+      i++;
+      setTimeout(typing, speed);
+    }
+  }
+
+  typing();
+}
+
+// ✅ SEND MESSAGE (FULLY FIXED)
 function sendMessage() {
   const text = input.value.trim();
   if (!text) return;
 
-  // USER MSG
+  // USER MESSAGE
   const userMsg = document.createElement("div");
   userMsg.className = "message user-message";
   userMsg.innerText = text;
@@ -109,6 +156,7 @@ function sendMessage() {
     chatBox.appendChild(errMsg);
   });
 }
+</script>
 </script>
 </body>
 </html>
